@@ -652,10 +652,7 @@ func cell_to_char_info(c Cell) (attr word, wc [2]wchar) {
 }
 
 func move_cursor(x, y int) {
-	err := set_console_cursor_position(out, coord{short(x), short(y)})
-	if err != nil {
-		panic(err)
-	}
+	_ = set_console_cursor_position(out, coord{short(x), short(y)})
 }
 
 func show_cursor(visible bool) {
