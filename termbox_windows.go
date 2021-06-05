@@ -1,10 +1,13 @@
 package termbox
 
-import "math"
-import "syscall"
-import "unsafe"
-import "unicode/utf16"
-import "github.com/mattn/go-runewidth"
+import (
+	"math"
+	"syscall"
+	"unicode/utf16"
+	"unsafe"
+
+	"github.com/mattn/go-runewidth"
+)
 
 type (
 	wchar     uint16
@@ -468,7 +471,10 @@ func get_win_min_size(out syscall.Handle) coord {
 func get_win_size(out syscall.Handle) coord {
 	err := get_console_screen_buffer_info(out, &tmp_info)
 	if err != nil {
-		panic(err)
+		return coord{
+			x: -2,
+			y: -2,
+		}
 	}
 
 	min_size := get_win_min_size(out)
@@ -500,7 +506,7 @@ func fix_win_size(out syscall.Handle, size coord) (err error) {
 
 func update_size_maybe() {
 	size := get_win_size(out)
-	if size.x != term_size.x || size.y != term_size.y {
+	if (size.x != -2 && size.y != -2) && (size.x != term_size.x || size.y != term_size.y) {
 		set_console_screen_buffer_size(out, size)
 		fix_win_size(out, size)
 		term_size = size
